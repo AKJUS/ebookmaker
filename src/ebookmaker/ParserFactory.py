@@ -101,7 +101,7 @@ class ParserFactory:
 
 
         if url in cls.parsers:
-            # debug("... reusing parser for %s" % url)
+            debug("... reusing parser for %s" % url)
             # reuse same parser, maybe already filled with data
             parser = cls.parsers[url]
             parser.reset()
