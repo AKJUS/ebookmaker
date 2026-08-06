@@ -482,7 +482,7 @@ class Parser(HTMLParserBase):
                 error('header marker is missing in %s', self.attribs.url)
             if 'x-header' in self.pg_footer and options.production:
                 error('footer marker is missing in %s', self.attribs.url)
-        return self.text
+        return self.pg_header + self.text + self.pg_footer
 
 
     def get_charset_from_meta(self):

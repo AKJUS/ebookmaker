@@ -1,6 +1,5 @@
-0.14.2 July xx, 1996
-- refactored boilerplate stripping so it only needs to be done once per book.
-
+0.14.2 August xx, 1996
+- refactored boilerplate stripping for txt files so it only needs to be done once per book. boilerplate is now detected in the text Parser, instead of in the text Writer.
 
 0.14.1 June 12, 2026
 - fixed bug where text directly under body is deleted.
