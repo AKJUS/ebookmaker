@@ -1,3 +1,5 @@
+- support HTML5 `time` element. fixes #332 
+
 0.14.2 July 4, 2026
 - `text-decoration` for `a` should be reset to `underline`, not initial. Fixes #316.
 
