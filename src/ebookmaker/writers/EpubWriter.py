@@ -1084,6 +1084,14 @@ class Writer(writers.HTMLishWriter):
                 tag.tag = NS.xhtml.div
                 writers.HTMLWriter.add_class(tag, newtag)
 
+        # replace html5 block tags in forbidden contexts
+        for badblock in [('a', 'p'), ('a', 'div')]:
+            tag, blocktag = badblock
+            for block in xpath(xhtml, f'//xhtml:{tag}/xhtml:{blocktag}'):
+                usedtags.add(block)
+                block.tag = NS.xhtml.span
+                writers.HTMLWriter.add_class(block, f'{tag}_{blocktag}')
+
         # replace html5 inline tags
         for newtag in ['u', 'ruby', 'rt', 'rp', 'time']:
             for tag in xpath(xhtml, f'//xhtml:{newtag}'):
