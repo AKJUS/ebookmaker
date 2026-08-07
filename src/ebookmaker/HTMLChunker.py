@@ -165,6 +165,9 @@ class HTMLChunker:
         for e in xpath(self.chunk, '//mathml:math'):
             attribs.rel.add('mathml')
             break
+        for e in xpath(self.chunk, '//xhtml:svg'):
+            attribs.rel.add('svg')
+            break
         for e in xpath(self.chunk, '//svg:svg'):
             attribs.rel.add('svg')
             break
