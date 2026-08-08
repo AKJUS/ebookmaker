@@ -305,3 +305,23 @@ class HTMLChunker:
                 error("HTMLChunker: Cannot rewrite toc entry '%s'" % entry[0])
                 error(repr(self.idmap))
                 del entry
+
+    def set_running_headers(self):
+        """ Use hN elements in chunks to set the chunk title
+
+        """
+        chunk_title = ''
+        for chunk in self.chunks:
+            for tag in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
+                hN_title = ''
+                for hN in xpath(chunk[0], f"//xhtml:{tag}"):
+                    hN_title = hN.text_content()
+                    if hN_title:
+                         break
+                if hN_title:
+                    chunk_title = hN_title
+                    break
+            if chunk_title != '':
+                for title in xpath(chunk[0], f"//xhtml:title"):
+                    title.text = chunk_title
+                    break
