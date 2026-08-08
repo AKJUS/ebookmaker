@@ -1,4 +1,6 @@
 
+0.14.3 August xx, 1996
+- refactored boilerplate stripping for txt files so it only needs to be done once per book. boilerplate is now detected in the text Parser, instead of in the text Writer.
 - support HTML5 `time` element. fixes #332 
 - `a` tags can't contain block tags in xhtml, so div in `a` and `p` in `a` cause EPUB2 validation errors, so Ebookmaker now changes `p` and `div` occurring in `a` to `span` for EPUB2. I'm not sure why anyone would want to use this markup in a book. Fixes #333
 

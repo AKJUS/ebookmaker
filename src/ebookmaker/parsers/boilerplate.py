@@ -148,6 +148,7 @@ def strip_headers_from_txt(text):
     '''
     when input is plain text, strip the heaters and return (stripped_text, pg_header, pg_footer)
     '''
+    debug('stripping headers from txt')
     def markers_split(text, markers):
         for marker in markers:
             divider = marker.search(text)
