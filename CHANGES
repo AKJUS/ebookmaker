@@ -1,5 +1,10 @@
 
-0.14.3 August xx, 1996
+0.14.3 August ??, 2026
+- handling of inline SVG has been improved.
+    - the inline SVG element is now handled whether or not it has set the svg namespace.
+    - inline SVG is changed to standalone files in EPUB2
+    - inline html5 SVG now adapted for EPUB3, which cares about namespaces
+- an error is no longer emitted when rst output is requested from html input
 - uses hN element to set the title element of each chunk in the epub. fixes #331
 - refactored boilerplate stripping for txt files so it only needs to be done once per book. boilerplate is now detected in the text Parser, instead of in the text Writer.
 - support HTML5 `time` element. fixes #332 

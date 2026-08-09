@@ -20,6 +20,7 @@ import six
 from PIL import Image, ImageFile
 from lxml import etree
 
+from libgutenberg.GutenbergGlobals import NS
 from libgutenberg.Logger import debug, critical, error
 from libgutenberg.MediaTypes import mediatypes as mt
 from ebookmaker.parsers import ParserBase
@@ -171,6 +172,7 @@ class Parser(ParserBase):
             atts_to_remove = ['data-variant', 'focusable', 'role']
             try:
                 tree = etree.parse(io.BytesIO(self.image_data))
+                svg = tree.getroot()
             except etree.XMLSyntaxError as e:
                 critical(f'SVG image {self.attribs.url} was badly formed XML: {e}')
                 return self.image_data
@@ -181,5 +183,11 @@ class Parser(ParserBase):
                 for att in copy.copy(element.attrib):
                     if att.startswith('aria-'):
                         del element.attrib[att]
+                # strip namespaces hanging around, perhaps because it's an extracted image
+                element.tag = etree.QName(element).localname
+            etree.cleanup_namespaces(tree)
+            # restore the root namespace
+            svg.tag = NS.svg.svg
+
             self.image_data = etree.tostring(tree, encoding="utf-8")
         return self.image_data
