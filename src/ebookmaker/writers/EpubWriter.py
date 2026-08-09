@@ -1047,7 +1047,8 @@ class Writer(writers.HTMLishWriter):
         
         attrs_to_remove = [('*', 'role'),
             ('*', 'itemid'), ('*', 'itemprop'), ('*', 'itemref'), ('*', 'itemscope'),
-            ('*', 'itemtype'), ('ol', 'start'), ('li', 'value'), ('*', 'focusable')]
+            ('*', 'itemtype'), ('ol', 'start'), ('li', 'value'), ('*', 'focusable'),
+            ('time', 'datetime')]
 
         svgattrs_to_remove = [('*', 'role'), ('*', 'focusable')]
 
@@ -1092,7 +1093,7 @@ class Writer(writers.HTMLishWriter):
                 writers.HTMLWriter.add_class(block, f'{tag}_{blocktag}')
 
         # replace html5 inline tags
-        for newtag in ['u', 'ruby', 'rt', 'rp']:
+        for newtag in ['u', 'ruby', 'rt', 'rp', 'time']:
             for tag in xpath(xhtml, f'//xhtml:{newtag}'):
                 usedtags.add(newtag)
                 tag.tag = NS.xhtml.span
