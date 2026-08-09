@@ -787,6 +787,7 @@ class Writer(EpubWriter.Writer):
             # after splitting html into chunks we have to rewrite all
             # internal links in HTML
             chunker.rewrite_internal_links()
+            chunker.set_running_headers()
             # also in the TOC
             if not ncx.toc:
                 ncx.toc.append([job.spider.parsers[0].attribs.url, 'Start', 1])

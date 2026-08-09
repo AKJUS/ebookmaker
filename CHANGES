@@ -5,8 +5,11 @@
     - inline SVG is changed to standalone files in EPUB2
     - inline html5 SVG now adapted for EPUB3, which cares about namespaces
 - an error is no longer emitted when rst output is requested from html input
+- uses hN element to set the title element of each chunk in the epub. fixes #331
 - refactored boilerplate stripping for txt files so it only needs to be done once per book. boilerplate is now detected in the text Parser, instead of in the text Writer.
+- support HTML5 `time` element. fixes #332 
 - `a` tags can't contain block tags in xhtml, so div in `a` and `p` in `a` cause EPUB2 validation errors, so Ebookmaker now changes `p` and `div` occurring in `a` to `span` for EPUB2. I'm not sure why anyone would want to use this markup in a book. Fixes #333
+
 
 0.14.2 July 4, 2026
 - `text-decoration` for `a` should be reset to `underline`, not initial. Fixes #316.
