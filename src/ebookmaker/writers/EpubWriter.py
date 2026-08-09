@@ -110,6 +110,9 @@ span.u {
 a.pgkilled {
    text-decoration: none;
    }
+a[href] {
+    text-decoration: underline;
+}
 img.x-ebookmaker-cover {max-width: 100%;}
 #pg-header {page-break-after: always;}
 #pg-footer {page-break-before: always;}
