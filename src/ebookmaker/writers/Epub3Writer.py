@@ -560,6 +560,10 @@ class Writer(EpubWriter.Writer):
         # add namespace to math elements
         for e in xpath(xhtml, "//xhtml:math"):
             e.attrib['xmlns'] = "http://www.w3.org/1998/Math/MathML"
+        # add namespace to svg
+        for e in xpath(xhtml, "//xhtml:svg"):
+            e.attrib['xmlns'] = "http://www.w3.org/2000/svg"
+        
 
     @staticmethod
     def fix_incompatible_css(sheet):
@@ -783,6 +787,7 @@ class Writer(EpubWriter.Writer):
             # after splitting html into chunks we have to rewrite all
             # internal links in HTML
             chunker.rewrite_internal_links()
+            chunker.set_running_headers()
             # also in the TOC
             if not ncx.toc:
                 ncx.toc.append([job.spider.parsers[0].attribs.url, 'Start', 1])

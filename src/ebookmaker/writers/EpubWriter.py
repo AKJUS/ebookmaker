@@ -1050,7 +1050,8 @@ class Writer(writers.HTMLishWriter):
         
         attrs_to_remove = [('*', 'role'),
             ('*', 'itemid'), ('*', 'itemprop'), ('*', 'itemref'), ('*', 'itemscope'),
-            ('*', 'itemtype'), ('ol', 'start'), ('li', 'value'), ('*', 'focusable')]
+            ('*', 'itemtype'), ('ol', 'start'), ('li', 'value'), ('*', 'focusable'),
+            ('time', 'datetime')]
 
         svgattrs_to_remove = [('*', 'role'), ('*', 'focusable')]
 
@@ -1095,7 +1096,7 @@ class Writer(writers.HTMLishWriter):
                 writers.HTMLWriter.add_class(block, f'{tag}_{blocktag}')
 
         # replace html5 inline tags
-        for newtag in ['u', 'ruby', 'rt', 'rp']:
+        for newtag in ['u', 'ruby', 'rt', 'rp', 'time']:
             for tag in xpath(xhtml, f'//xhtml:{newtag}'):
                 usedtags.add(newtag)
                 tag.tag = NS.xhtml.span
@@ -1128,11 +1129,40 @@ class Writer(writers.HTMLishWriter):
                 tag.clear()
                 tag.text = text
 
+    @staticmethod
+    def extract_svg(xhtml, parent_url):
+        """
+        convert embedded svg elements to stand-alone svg files that work better n EPUB2.
 
+        """
+        svgnum = 0
+        new_parsers = []
+        for svg in xpath(xhtml, '//xhtml:svg'):
+            # make a new parser
+            attribs = parsers.ParserAttributes()
+            svg_parser = parsers.ImageParser.Parser(attribs=attribs)
+            attribs.mediatype = mt.svg
+            attribs.id = f'extracted_svg_{svgnum}'
+            attribs.url = urllib.parse.urljoin(parent_url, f'images/extracted_svg_{svgnum}.svg')
+            svg_parser.image_data = etree.tostring(svg)
 
-
-
-
+            # turn the svg element into an img element
+            for att in svg.attrib:
+                if att not in {"alt", "class", "dir", "height", "id", "ismap", "lang", "longdesc",
+                               "src", "title", "usemap", "width", "xml:lang"}:
+                    del svg.attrib[att]
+            for title in xpath(svg, '//xhtml:title'):
+                svg.attrib['alt'] = title.text_content() or ''
+                break
+            svg.tag = NS.xhtml.img
+            svg.attrib['src'] = attribs.url
+            svg.attrib['id'] = attribs.id
+            for child in list(svg):
+                svg.remove(child)
+            
+            # return the new parsers
+            new_parsers.append(svg_parser)
+        return new_parsers
 
     @staticmethod
     def strip_links(xhtml, manifest):
@@ -1355,6 +1385,7 @@ class Writer(writers.HTMLishWriter):
                     if p.mediatype() == mt.xhtml:
                         opf.spine_item_from_parser(p)
                     else:
+                        debug(f'adding {p.attribs.url} to manifest')
                         opf.manifest_item_from_parser(p)
                 except Exception as what:
                     error("Could not process file %s: %s" % (p.attribs.url, what))
@@ -1460,8 +1491,14 @@ class Writer(writers.HTMLishWriter):
                         p.remap_links(idmap)
 
                         xhtml.make_links_absolute(base_url=p.attribs.url)
-                        self.fix_html5(xhtml)
+                        new_parsers = self.extract_svg(xhtml, p.attribs.url)
 
+                        # add the new parsers to parser list so the get handled properly
+                        parserlist.extend(new_parsers)
+                        job.spider.parsers.extend(new_parsers)
+
+                        self.fix_html5(xhtml)
+                         
                         strip_classes = self.get_classes_with_prop(xhtml)
                         strip_classes = strip_classes.intersection(STRIP_CLASSES)
                         if strip_classes:
@@ -1531,6 +1568,7 @@ class Writer(writers.HTMLishWriter):
             # after splitting html into chunks we have to rewrite all
             # internal links in HTML
             chunker.rewrite_internal_links()
+            chunker.set_running_headers()
             # also in the TOC
             if not ncx.toc:
                 ncx.toc.append([job.spider.parsers[0].attribs.url, 'Start', 1])
