@@ -423,6 +423,12 @@ class Parser(HTMLParserBase):
                     colgroup.append(col)
             table.insert(0, colgroup)
 
+        # empty th should be td
+
+        for th in xpath(self.xhtml, "//xhtml:th[not(normalize-space())]"):
+            # these should be td instead
+            th.tag = NS.xhtml.td
+
         # move lang to xml:lang
 
         for elem in xpath(self.xhtml, "//xhtml:*[@lang]"):
