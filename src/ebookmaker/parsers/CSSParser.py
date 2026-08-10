@@ -81,6 +81,65 @@ PG_CSS_PROFILE = (
 
 cssutils.profile.addProfiles([PG_CSS_PROFILE])
 
+# The following profile offered by Gemini
+# Define core validation patterns using regex macro fragments
+length_or_pct = r'(0|[-+]?[0-9]*\.?[0-9]+(px|em|rem|vh|vw|%))'
+flex_fr = r'([-+]?[0-9]*\.?[0-9]+fr)'
+track_breadth = f'({length_or_pct}|{flex_fr}|min-content|max-content|auto)'
+minmax = f'(minmax\\(\\s*{track_breadth}\\s*,\\s*{track_breadth}\\s*\\))'
+repeat = f'(repeat\\(\\s*([0-9]+|auto-fill|auto-fit)\\s*,\\s*({track_breadth}|{minmax}|\\s|\\[[a-zA-Z0-9_-]+\\])+\\s*\\))'
+track_size = f'({track_breadth}|{minmax}|{repeat})'
+line_names = r'(\\[[a-zA-Z0-9_-]+\\])'
+
+# Final macro for template rows/columns track listings
+grid_template_track = f'(none|({track_size}|{line_names}|\\s)+)'
+
+# Alignment macros
+alignment_items = r'(start|end|center|stretch)'
+alignment_content = r'(start|end|center|stretch|space-between|space-around|space-evenly)'
+
+# Build the profile dictionary
+grid_properties = {
+    # Container Properties
+    'display': r'(grid|inline-grid|block|inline|flex|inline-flex|none)', # Extends default display
+    'grid-template-columns': grid_template_track,
+    'grid-template-rows': grid_template_track,
+    'grid-template-areas': r'(none|("[^"]+")+|(\'[^\']+\')+\s*)',
+    'grid-template': r'.+', # Catch-all fallback shorthand string
+    'grid-auto-columns': f'({track_breadth}|{minmax})',
+    'grid-auto-rows': f'({track_breadth}|{minmax})',
+    'grid-auto-flow': r'(row|column|dense|row\s+dense|column\s+dense)',
+    'grid': r'.+', 
+    'row-gap': length_or_pct,
+    'column-gap': length_or_pct,
+    'gap': f'{length_or_pct}(\\s+{length_or_pct})?',
+    'justify-items': alignment_items,
+    'align-items': alignment_items,
+    'justify-content': alignment_content,
+    'align-content': alignment_content,
+
+    # Item Properties
+    'grid-column-start': r'(auto|[a-zA-Z0-9_-]+|[0-9]+|span\s+[0-9]+|span\s+[a-zA-Z0-9_-]+)',
+    'grid-column-end': r'(auto|[a-zA-Z0-9_-]+|[0-9]+|span\s+[0-9]+|span\s+[a-zA-Z0-9_-]+)',
+    'grid-row-start': r'(auto|[a-zA-Z0-9_-]+|[0-9]+|span\s+[0-9]+|span\s+[a-zA-Z0-9_-]+)',
+    'grid-row-end': r'(auto|[a-zA-Z0-9_-]+|[0-9]+|span\s+[0-9]+|span\s+[a-zA-Z0-9_-]+)',
+    'grid-column': r'.+', 
+    'grid-row': r'.+',
+    'grid-area': r'.+',
+    'justify-self': f'(auto|{alignment_items})',
+    'align-self': f'(auto|{alignment_items})',
+}
+
+# Register the profile globally with cssutils
+cssutils.profile.addProfile(
+    profile='CSS Grid Layout Level 1',
+    properties=grid_properties,
+    macros={}
+)
+
+# Enable the registered profile
+cssutils.profile.defaultProfiles.append('CSS Grid Layout Level 1')
+
 class Parser(ParserBase):
     """ Parse an external CSS file. """
 
