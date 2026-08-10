@@ -113,7 +113,7 @@ body.x-ebookmaker-coverpage {
 }
 body.x-ebookmaker.x-ebookmaker-3  .pgshow {
     visibility: visible;
-    display: initial;
+    display: inline;
     }
 """
 
