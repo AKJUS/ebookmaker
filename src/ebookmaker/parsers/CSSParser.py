@@ -59,6 +59,7 @@ _MACROS = {
     'string': r'''(?:"[^"]*"|'[^']*')''',
     'lop': r'(?:{length}|{percentage})',           # <length-percentage>
     'lopa': r'(?:{length}|{percentage}|auto)',     # <length-percentage> | auto
+    'positive-integer': r'\d+',
  
     # --- Grid: track sizing ---
     'flex-value': r'{num}fr',
@@ -91,6 +92,7 @@ _MACROS = {
     'numeric-spacing-values': 'proportional-nums|tabular-nums',
     'numeric-fraction-values': 'diagonal-fractions|stacked-fractions',
     'font-variant-attrs': '{numeric-figure-values}|{numeric-spacing-values}|{numeric-fraction-values}|ordinal|slashed-zero',
+
 }
  
 # ---------------------------------------------------------------------------
@@ -222,6 +224,19 @@ PG_CSS_PROFILE = {
 
         # text-shadow: none | <shadow>#
         'text-shadow': r'(?:none|{shadow-item}(?:\s*,\s*{shadow-item})*)',
+ 
+        # initial letter for accessible drop caps
+        # <number> = the sink's size, in number of lines; the optional
+        # <integer> = the sink, how many lines it descends (defaults to
+        # round(<number>) when omitted)
+        'initial-letter': r'(?:normal|{num}(?:\s+{integer})?)',
+
+        # initial-letter-align: [ auto | alphabetic | hanging | ideographic ]
+        'initial-letter-align': r'(?:auto|alphabetic|hanging|ideographic)',
+    
+        # initial-letter-wrap: none | first | all | grid | <length-percentage>
+        'initial-letter-wrap': r'(?:none|first|all|grid|{lop})',
+
 
 }
         
