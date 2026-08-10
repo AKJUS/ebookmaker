@@ -1,13 +1,13 @@
 
 0.14.3 August ??, 2026
 
-This release includes several important updates. There are quite a few updated
+This release includes several important updates. There are quite a few issues still waiting to be addressed; they are not forgotten.
 
 - To balance the long-standing policy of only using "REC" CSS against legal requirements for accessibility, we are significantly relaxing our CSS validation. This means that post-processors should take care to provide "graceful degradation" for CSS that might not be supported in every reading device.
     - CSS Grid Layout Level 1 is now supported. Fixes #322. Grid layout should be strongly considered as a replacement for the use of table for layout
     - CSS Flexbox Level 1 is now supported. Together with Grid, the should be no reason to use table for layout; going forward, layout tables will need to be converted to more accessible CSS based layout.
     - CSS3 Text Decoration properties are now supported. These were the most often used properties removed by Ebookmaker as not yet REC. 
-    - The first-letter property is now supported. While this is still not supported in every browser, it is supported by most ebook readers. Use this property to make drop caps in an accessible way.
+    - The first-letter property is now supported. While this is still not supported in every browser, it is supported by most ebook readers. Use this property to make drop caps in an accessible way.  Fixes #310 
     - Ebookmaker uses the Python module 'CSSUtils' to do CSS validation. It does not support the full grammar used in newer CSS. In particular it does not support the "var()" construct; do not expect this to change anytime soon.
     - The current version of CSSUtils does not support the `rem` measurement, so CSS with rem in it will cause errors to be reported and CSS 2.1 rules containing `rem` will be removed. The current version of CSSUtils, that supports `rem`, requires a Python version newer than we have running in production. When our python version is updated, we will update CSSUtils.
 
