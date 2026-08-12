@@ -12,6 +12,7 @@ This release includes several important updates. There are quite a few issues st
     - The current version of CSSUtils does not support the `rem` measurement, so CSS with rem in it will cause errors to be reported and CSS 2.1 rules containing `rem` will be removed. The current version of CSSUtils, that supports `rem`, requires a Python version newer than we have running in production. When our python version is updated, we will update CSSUtils.
 
 - In both in HTML and EPUB, for improved accessibility, added the CSS rule `a[href] {text-decoration: underline;}` to make sure links are underlined. Previously, we underlined all `a` elements, which ignored prior usage as an link target.
+- The `aside` element is now allowed. becomes div[class=aside] in epub2.
 - handling of inline SVG has been improved.
     - the inline SVG element is now handled whether or not it has set the svg namespace.
     - inline SVG is changed to standalone files in EPUB2
