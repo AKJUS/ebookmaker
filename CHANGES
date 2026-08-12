@@ -1,8 +1,7 @@
 
-0.14.3 August ??, 2026
+0.14.3 August 12, 2026
 
 This release includes several important updates. There are quite a few issues still waiting to be addressed; they are not forgotten.
-
 - To balance the long-standing policy of only using "REC" CSS against legal requirements for accessibility, we are significantly relaxing our CSS validation. This means that post-processors should take care to provide "graceful degradation" for CSS that might not be supported in every reading device.
     - CSS Grid Layout Level 1 is now supported. Fixes #322. Grid layout should be strongly considered as a replacement for the use of table for layout
     - CSS Flexbox Level 1 is now supported. Together with Grid, the should be no reason to use table for layout; going forward, layout tables will need to be converted to more accessible CSS based layout.
@@ -12,17 +11,26 @@ This release includes several important updates. There are quite a few issues st
     - The current version of CSSUtils does not support the `rem` measurement, so CSS with rem in it will cause errors to be reported and CSS 2.1 rules containing `rem` will be removed. The current version of CSSUtils, that supports `rem`, requires a Python version newer than we have running in production. When our python version is updated, we will update CSSUtils.
 
 - In both in HTML and EPUB, for improved accessibility, added the CSS rule `a[href] {text-decoration: underline;}` to make sure links are underlined. Previously, we underlined all `a` elements, which ignored prior usage as an link target.
+
 - The `aside` element is now allowed. becomes div[class=aside] in epub2.
+
 - handling of inline SVG has been improved.
     - the inline SVG element is now handled whether or not it has set the svg namespace.
     - inline SVG is changed to standalone files in EPUB2
     - inline html5 SVG now adapted for EPUB3, which cares about namespaces
+
 - an error is no longer emitted when rst output is requested from html input
+
 - uses hN element to set the title element of each chunk in the epub. fixes #331
+
 - refactored boilerplate stripping for txt files so it only needs to be done once per book. boilerplate is now detected in the text Parser, instead of in the text Writer.
+
 - support HTML5 `time` element. fixes #332 
+
 - `a` tags can't contain block tags in xhtml, so div in `a` and `p` in `a` cause EPUB2 validation errors, so Ebookmaker now changes `p` and `div` occurring in `a` to `span` for EPUB2. I'm not sure why anyone would want to use this markup in a book. Fixes #333
+
 - empty `th` elements are replaced by empty `td` elements for better accessibility. Fixes #315.
+
 
 0.14.2 July 4, 2026
 - `text-decoration` for `a` should be reset to `underline`, not initial. Fixes #316.
