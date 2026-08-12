@@ -1081,7 +1081,8 @@ class Writer(writers.HTMLishWriter):
 
         # replace html5 block tags
         usedtags = set()
-        for newtag in ['article', 'figcaption', 'figure', 'footer', 'header', 'section', 'nav', 'main']:
+        for newtag in ['article', 'figcaption', 'figure', 'footer', 'header', 'section', 'nav',
+                       'main', 'aside']:
             for tag in xpath(xhtml, f'//xhtml:{newtag}'):
                 usedtags.add(newtag)
                 tag.tag = NS.xhtml.div
