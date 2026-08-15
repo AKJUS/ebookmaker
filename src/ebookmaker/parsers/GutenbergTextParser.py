@@ -475,13 +475,6 @@ class Parser(HTMLParserBase):
 
         
     def unicode_content(self):
-        if self.text == '':
-            text = HTMLParserBase.unicode_content(self)
-            self.text, self.pg_header, self.pg_footer = strip_headers_from_txt(text)
-            if 'x-header' in self.pg_header and options.production:
-                error('header marker is missing in %s', self.attribs.url)
-            if 'x-header' in self.pg_footer and options.production:
-                error('footer marker is missing in %s', self.attribs.url)
         return self.pg_header + self.text + self.pg_footer
 
 
@@ -640,7 +633,13 @@ class Parser(HTMLParserBase):
         if self.xhtml is not None:
             return
 
-        text = self.unicode_content()
+        text = HTMLParserBase.unicode_content(self)
+        self.text, self.pg_header, self.pg_footer = strip_headers_from_txt(text)
+        if 'x-header' in self.pg_header and options.production:
+            error('header marker is missing in %s', self.attribs.url)
+        if 'x-header' in self.pg_footer and options.production:
+            error('footer marker is missing in %s', self.attribs.url)
+        text = self.text
         text = parsers.RE_RESTRICTED.sub('', text)
         text = gg.xmlspecialchars(text)
 
@@ -693,12 +692,18 @@ class Parser(HTMLParserBase):
 
         for body in xpath(self.xhtml, '//xhtml:body'):
             xhtmlparser = lxml.html.XHTMLParser(huge_tree=True)
-            body.append(etree.fromstring(self.pg_header, xhtmlparser))
+            pg_header_pre = etree.Element(NS.xhtml.pre)
+            pg_header_pre.attrib['id'] = 'pg-header'
+            pg_header_pre.text = self.pg_header
+            body.append(pg_header_pre)
             for par in self.pars:
                 p = etree.fromstring(self.ship_out(par), xhtmlparser)
                 p.tail = '\n\n'
                 body.append(p)
-            body.append(etree.fromstring(self.pg_footer, xhtmlparser))
+            pg_footer_pre = etree.Element(NS.xhtml.pre)
+            pg_footer_pre.text = self.pg_footer
+            pg_footer_pre.attrib['id'] = 'pg-footer'
+            body.append(pg_footer_pre)
 
         self.pars = []
 
