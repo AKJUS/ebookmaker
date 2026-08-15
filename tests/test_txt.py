@@ -8,11 +8,13 @@ import subprocess
 import ebookmaker
 from ebookmaker.ParserFactory import load_parsers, ParserFactory
 from ebookmaker.CommonCode import Options
+from ebookmaker.EbookMaker import config
 
 options = Options()
 
 class TestFromTxt(unittest.TestCase):
     def setUp(self):
+        config()
         self.sample_dir = os.path.join(os.path.dirname(__file__), 'files')
         self.out_dir = os.path.join(os.path.dirname(__file__), 'out')
 
@@ -45,6 +47,7 @@ class TestFromTxt(unittest.TestCase):
         dir = os.path.join(self.sample_dir, book_id)
         srcfile = os.path.join(dir, '%s-0.txt' % book_id)
         parser = ParserFactory.create(srcfile)
+        parser.parse()
         self.assertTrue(len(parser.unicode_content()) > len(parser.text))
         self.assertTrue(len(parser.pg_header) > 500)
         self.assertTrue(len(parser.pg_footer) > 1500)

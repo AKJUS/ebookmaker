@@ -170,7 +170,6 @@ def strip_headers_from_txt(text):
         divider_tail = ''
         if '\n' in text:
             divider_tail, text = text.split('\n', maxsplit=1)
-            print(divider_tail)
         pg_header = '\n'.join([header_text, STRIPPED_START, divider_tail])
 
     text, divider, footer_text = markers_split(text, BOTTOM_MARKERS)
