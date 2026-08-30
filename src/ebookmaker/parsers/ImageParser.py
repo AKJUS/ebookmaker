@@ -29,8 +29,7 @@ from ebookmaker.parsers import ParserBase
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 mediatypes = (mt.jpeg, mt.png, mt.gif, mt.svg)
-
-
+SVGNS = {str(NS.svg), "http://www.w3.org/1999/xlink"}
 
 class Parser(ParserBase):
     """Parse an image.
@@ -176,17 +175,21 @@ class Parser(ParserBase):
             except etree.XMLSyntaxError as e:
                 critical(f'SVG image {self.attribs.url} was badly formed XML: {e}')
                 return self.image_data
+
             for element in tree.iter():
+                #remove attributes that cause trouble
                 for att in atts_to_remove:
                     if att in element.attrib:
                         del element.attrib[att]
                 for att in copy.copy(element.attrib):
                     if att.startswith('aria-'):
                         del element.attrib[att]
-                # strip namespaces hanging around, perhaps because it's an extracted image
-                element.tag = etree.QName(element).localname
-            etree.cleanup_namespaces(tree)
-            # restore the root namespace
+
+                 # explicitly set all elements in the SVG file that are not xlink or svg to svg
+                if etree.QName(element).namespace not in SVGNS:
+                    element.tag = NS.svg.__getitem__(etree.QName(element).localname)
+
+            # set the root namespace
             svg.tag = NS.svg.svg
 
             self.image_data = etree.tostring(tree, encoding="utf-8")

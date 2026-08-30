@@ -1,3 +1,6 @@
+0.14.5 August 30, 2026
+- fixed a regression affecting books with external SVG files
+
 0.14.4 August 15, 2026
 - fixed a regression in text boilerplate stripping. Affected only txt -> html (and thus epub, mobi, etc)
 - fixed setup and added parse() invocation in tests_txt
