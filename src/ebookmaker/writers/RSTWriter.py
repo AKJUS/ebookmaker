@@ -31,6 +31,11 @@ class Writer (writers.BaseWriter):
         debug ("Creating RST file: %s" % filename)
 
         parser = ParserFactory.ParserFactory.create (job.url)
+        
+        has_txt_source = 'text/plain' in str(parser.attribs.orig_mediatype)
+        if not has_txt_source:
+            debug("needs plain text file for conversion: %s from %s", filename, job.url)
+            return
 
         data = parser.preprocess ('utf-8').encode ('utf-8')
 
